@@ -1,0 +1,169 @@
+---
+// Works (concept §5 «Роботи», R-008): one large photo held in place, the rest as a mosaic of real formats,
+// each captioned with the object. Photos open larger in a dialog; without scripts the link opens the image.
+// Phones: one horizontal row with scroll-snap and the edge of the next photo visible.
+import { Picture, getImage } from "astro:assets";
+import FutureLink from "./FutureLink.astro";
+import Icon from "./Icon.astro";
+import { FUTURE } from "../data/site";
+import shkira from "../assets/photos/stobana-shkira.jpg";
+import dyvan from "../assets/photos/kutovyi-dyvan.jpg";
+import kutochok from "../assets/photos/kukhonnyi-kutochok.jpg";
+import ofisne from "../assets/photos/ofisne-krislo.jpg";
+import stiltsiPuf from "../assets/photos/stiltsi-puf.jpg";
+import kompBile from "../assets/photos/kompyuterne-krislo-bile.jpg";
+import stilets from "../assets/photos/kukhonnyi-stilets.jpg";
+import ofisni from "../assets/photos/ofisni-krisla.jpg";
+import komp from "../assets/photos/kompyuterne-krislo.jpg";
+import syddinnya from "../assets/photos/stilets-syddinnya.jpg";
+
+const items = [
+  { src: shkira, caption: "Стьобана шкіра", alt: "Деталь, обтягнута чорною шкірою зі стьобкою ромбом і червоною ниткою" },
+  { src: dyvan, caption: "Кутовий диван", alt: "Світлий кутовий диван після заміни оббивки" },
+  { src: ofisne, caption: "Офісне крісло", alt: "Офісне крісло після перетяжки бордовою шкірою" },
+  { src: kutochok, caption: "Кухонний куточок", alt: "Кухонний куточок після перетяжки світлою шкірою" },
+  { src: stiltsiPuf, caption: "Стільці та пуф", alt: "Два стільці й пуф після перетяжки сірою тканиною" },
+  { src: kompBile, caption: "Комп'ютерне крісло", alt: "Комп'ютерне крісло після заміни оббивки на білу шкіру" },
+  { src: stilets, caption: "Стілець з високою спинкою", alt: "Стілець з високою спинкою після перетяжки сірою тканиною" },
+  { src: ofisni, caption: "Офісні крісла", alt: "Офісні крісла після перетяжки коричневою шкірою" },
+  { src: syddinnya, caption: "Сидіння стільця", alt: "Кухонний стілець з новим круглим сидінням фіолетового кольору" },
+  { src: komp, caption: "Комп'ютерне крісло", alt: "Комп'ютерне крісло після перетяжки коричневою тканиною" },
+];
+const large = await Promise.all(items.map((it) => getImage({ src: it.src, width: Math.min(1200, it.src.width), format: "webp" })));
+const [feature, ...rest] = items.map((it, i) => ({ ...it, large: large[i].src }));
+---
+<section id="roboty" class="section works" aria-labelledby="roboty-title" data-rec="R-008,R-019,MA-R004">
+  <div class="container">
+    <div class="works__head" data-reveal>
+      <h2 id="roboty-title" class="h2">Наші роботи</h2>
+      <p class="lead">Справжні фото меблів після перетяжки в нашій майстерні. Натисніть, щоб роздивитися ближче.</p>
+    </div>
+
+    <div class="works__grid" data-reveal style="--reveal-delay:80ms">
+      <figure class="work work--feature">
+        <a class="work__link" href={feature.large} data-caption={feature.caption}>
+          <span class="work__frame">
+            <Picture src={feature.src} alt={feature.alt} widths={[360, 540, 800]} sizes="(min-width: 1024px) 486px, 78vw" formats={["webp"]} loading="lazy" decoding="async" />
+          </span>
+        </a>
+        <figcaption>{feature.caption}</figcaption>
+      </figure>
+      <div class="works__rest">
+        {rest.map((it) => (
+          <figure class="work">
+            <a class="work__link" href={it.large} data-caption={it.caption}>
+              <span class="work__frame">
+                <Picture src={it.src} alt={it.alt} widths={[240, 360, 540]} sizes="(min-width: 1024px) 214px, 60vw" formats={["webp"]} loading="lazy" decoding="async" />
+              </span>
+            </a>
+            <figcaption>{it.caption}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+
+    <p class="works__all"><FutureLink note={FUTURE}>Усі роботи</FutureLink></p>
+  </div>
+
+  <dialog class="lb" aria-label="Фото роботи">
+    <div class="lb__inner">
+      <img class="lb__img" alt="Фото роботи" width="1200" height="900" decoding="async" />
+      <p class="lb__caption"></p>
+      <button class="lb__btn lb__close" type="button" aria-label="Закрити"><Icon name="close" /></button>
+      <button class="lb__btn lb__back" type="button" aria-label="Попереднє фото"><Icon name="back" /></button>
+      <button class="lb__btn lb__next" type="button" aria-label="Наступне фото"><Icon name="next" /></button>
+    </div>
+  </dialog>
+</section>
+
+<style>
+  .works__head { display: grid; gap: var(--s-2); }
+  .works__grid { margin-top: var(--s-5); display: flex; gap: var(--s-2); overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--space); margin-inline: calc(-1 * var(--space)); padding-inline: var(--space); padding-bottom: var(--s-2); scrollbar-width: thin; }
+  .works__rest { display: contents; }
+  .work { flex: none; scroll-snap-align: start; min-width: 0; }
+  .work__link { display: block; text-decoration: none; color: inherit; cursor: zoom-in; }
+  .work__frame { display: block; overflow: clip; background: var(--color-line); }
+  .work__frame :global(img) { height: clamp(16rem, 72vw, 22rem); width: auto; max-width: none; transition: transform var(--dur-mid) var(--ease-out); }
+  .work figcaption { margin-top: var(--s-1); font-size: var(--fs-cap); color: var(--color-muted); transition: color var(--dur-mid) var(--ease-out); }
+  .works__all { margin-top: var(--s-4); font-weight: 500; }
+
+  @media (min-width: 1024px) {
+    .works__head { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); align-items: end; }
+    .works__head .lead { justify-self: end; }
+    .works__grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gap); overflow: visible; margin-inline: 0; padding: 0; align-items: start; }
+    /* Aligned grid (one crop for all): the large photo fills the height of a regular 3 × 3 grid of square frames. */
+    .works__grid { align-items: stretch; }
+    .work--feature { grid-column: 1 / span 5; display: flex; flex-direction: column; }
+    .work--feature .work__link { flex: 1; display: flex; }
+    .work--feature .work__frame { flex: 1; min-height: 0; position: relative; }
+    .work--feature .work__frame :global(picture) { position: absolute; inset: 0; }
+    .works__rest { display: grid; grid-column: 6 / -1; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-3) var(--gap); }
+    .works__rest .work__frame { aspect-ratio: 1 / 1; }
+    .work__frame :global(picture) { height: 100%; }
+    .work__frame :global(img) { width: 100%; height: 100%; object-fit: cover; }
+    .work__link:hover .work__frame :global(img) { transform: scale(1.03); }
+    .work:has(.work__link:hover) figcaption { color: var(--color-text); }
+  }
+
+  .lb { width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: var(--color-scrim); color: var(--color-inverse-text); }
+  .lb::backdrop { background: transparent; }
+  .lb[open] { display: grid; place-items: center; animation: lb-in 300ms var(--ease-out); }
+  .lb__inner { position: relative; display: grid; justify-items: center; gap: var(--s-2); width: min(100% - 2 * var(--space), 72rem); padding-block: var(--s-6); }
+  .lb__img { max-height: calc(100vh - 12rem); width: auto; max-width: 100%; height: auto; box-shadow: 0 1.5rem 3rem var(--color-shadow); }
+  .lb__caption { font-size: var(--fs-2); }
+  .lb__btn { position: absolute; display: grid; place-items: center; width: 3rem; height: 3rem; border: 1px solid var(--color-inverse-line); border-radius: var(--radius); background: var(--color-inverse-bg); color: var(--color-inverse-text); cursor: pointer; transition: background-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out); }
+  .lb__btn:hover { background: var(--color-inverse-line); }
+  .lb__btn:active { transform: scale(.96); }
+  .lb__btn:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+  .lb__close { top: var(--s-1); right: 0; }
+  .lb__back { bottom: var(--s-1); left: calc(50% - 3.5rem); }
+  .lb__next { bottom: var(--s-1); right: calc(50% - 3.5rem); }
+  @media (min-width: 1024px) {
+    .lb[open] { animation-name: lb-in-scale; }
+    .lb__back { top: 50%; bottom: auto; left: 0; transform: translateY(-50%); }
+    .lb__next { top: 50%; bottom: auto; right: 0; transform: translateY(-50%); }
+    .lb__back:active, .lb__next:active { transform: translateY(-50%) scale(.96); }
+    .lb__inner { padding-inline: var(--s-7); }
+  }
+  @keyframes lb-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes lb-in-scale { from { opacity: 0; transform: scale(.98); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .lb[open] { animation: none; }
+    .work__link:hover .work__frame :global(img) { transform: none; }
+  }
+</style>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>(".lb");
+  const links = [...document.querySelectorAll<HTMLAnchorElement>(".work__link")];
+  if (dialog && typeof dialog.showModal === "function" && links.length) {
+    const img = dialog.querySelector<HTMLImageElement>(".lb__img")!;
+    const cap = dialog.querySelector<HTMLElement>(".lb__caption")!;
+    let index = 0;
+    let opener: HTMLElement | null = null;
+    const show = (i: number) => {
+      index = (i + links.length) % links.length;
+      const a = links[index];
+      const thumb = a.querySelector("img");
+      img.src = a.href;
+      img.alt = thumb?.alt ?? "";
+      if (thumb) { img.width = thumb.naturalWidth || thumb.width; img.height = thumb.naturalHeight || thumb.height; }
+      cap.textContent = a.dataset.caption ?? "";
+    };
+    links.forEach((a, i) => a.addEventListener("click", (e) => {
+      e.preventDefault();
+      opener = a;
+      show(i);
+      dialog.showModal();
+    }));
+    dialog.querySelector(".lb__close")?.addEventListener("click", () => dialog.close());
+    dialog.querySelector(".lb__back")?.addEventListener("click", () => show(index - 1));
+    dialog.querySelector(".lb__next")?.addEventListener("click", () => show(index + 1));
+    dialog.addEventListener("click", (e) => { if (e.target === dialog) dialog.close(); });
+    dialog.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") show(index - 1);
+      if (e.key === "ArrowRight") show(index + 1);
+    });
+    dialog.addEventListener("close", () => opener?.focus());
+  }
+</script>

@@ -1,0 +1,52 @@
+---
+// Reviews (concept §5 «Відгуки», R-007): the 5 real reviews of C-010 as written, with name and date, no stars.
+// One is set large as a quote, the other four run in a narrow column.
+import FutureLink from "./FutureLink.astro";
+import { reviews, FUTURE } from "../data/site";
+const [lead, ...others] = reviews;
+---
+<section id="vidguky" class="section reviews" aria-labelledby="vidguky-title" data-rec="R-007">
+  <div class="container reviews__grid">
+    <div class="reviews__main" data-reveal>
+      <h2 id="vidguky-title" class="h2">Відгуки</h2>
+      <figure class="quote">
+        <blockquote><p>{lead.text}</p></blockquote>
+        <figcaption><cite>{lead.name}</cite>, <time datetime={lead.date}>{lead.dateText}</time></figcaption>
+      </figure>
+    </div>
+    <ul class="reviews__list" data-reveal style="--reveal-delay:100ms">
+      {others.map((r) => (
+        <li>
+          <figure>
+            <blockquote><p>{r.text}</p></blockquote>
+            <figcaption><cite>{r.name}</cite>, <time datetime={r.date}>{r.dateText}</time></figcaption>
+          </figure>
+        </li>
+      ))}
+      <li class="reviews__all"><FutureLink note={FUTURE}>Усі відгуки</FutureLink></li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  .reviews__grid { display: grid; gap: var(--s-6); }
+  .quote { margin-top: var(--s-5); }
+  .quote blockquote p { font-family: var(--font-display); font-size: var(--fs-5); line-height: 1.2; letter-spacing: -0.01em; max-width: 28ch; text-wrap: balance; }
+  .quote blockquote p::before { content: "«"; }
+  .quote blockquote p::after { content: "»"; }
+  figcaption { margin-top: var(--s-2); color: var(--color-muted); font-size: var(--fs-cap); }
+  cite { font-style: normal; font-weight: 500; color: var(--color-text); }
+  .quote figcaption { font-size: var(--fs-1); }
+  .reviews__list { display: grid; }
+  .reviews__list > li { padding-block: var(--s-3); border-top: 1px solid var(--color-line); }
+  .reviews__list blockquote p { font-size: var(--fs-1); line-height: 1.6; }
+  .reviews__list figcaption { margin-top: var(--s-1); }
+  .reviews__all { font-weight: 500; }
+
+  @media (min-width: 1024px) {
+    .reviews__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gap); align-items: start; }
+    .reviews__main { grid-column: 1 / span 7; }
+    .quote { margin-top: var(--s-6); }
+    .reviews__list { grid-column: 9 / -1; padding-top: var(--s-2); }
+  }
+</style>

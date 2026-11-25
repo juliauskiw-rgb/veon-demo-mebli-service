@@ -1,0 +1,37 @@
+---
+import "../styles/tokens.css";
+import "../styles/global.css";
+
+interface Props { lang: string; title: string; description: string; canonical?: string; ogImage?: string; }
+const { lang, title, description, canonical, ogImage } = Astro.props;
+---
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <script is:inline>document.documentElement.classList.add("js")</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {canonical && <link rel="canonical" href={canonical} />}
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="uk_UA" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta name="theme-color" content="#F3F4F2" />
+    <meta name="robots" content="noindex" />
+    <link rel="preload" href="/fonts/piazzolla-cyrillic.woff2" as="font" type="font/woff2" crossorigin />
+    <slot name="head" />
+    <style is:global>html, body { overflow-x: clip; }</style>
+  </head>
+  <body id="top">
+    <a class="skip-link" href="#main">{lang.startsWith("uk") ? "До змісту" : lang.startsWith("ru") ? "К содержанию" : "Skip to content"}</a>
+    <slot name="header" />
+    <main id="main"><slot /></main>
+    <slot name="footer" />
+    <!-- Fonts gate for the first-screen sentence (Hero.astro): runs after the stylesheets, so @font-face rules are known. -->
+    <script is:inline>(function(){var d=document.documentElement;var ok=function(){d.classList.add("fonts-ready")};try{var t="Беремо м'які, й.",f=["1em Piazzolla","1em \"Golos Text\""];if(f.every(function(x){return document.fonts.check(x,t)})){ok();return}Promise.all(f.map(function(x){return document.fonts.load(x,t)})).then(ok,ok)}catch(e){ok()}setTimeout(ok,1500)})()</script>
+    <script src="../scripts/reveal.ts"></script>
+  </body>
+</html>

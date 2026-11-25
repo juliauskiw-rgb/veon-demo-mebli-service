@@ -1,0 +1,20 @@
+---
+// Bottom contact bar for phones (ux §6, С7): three equal zones with words, one tap to the real channel.
+import Icon from "./Icon.astro";
+import { contacts } from "../data/site";
+---
+<nav class="bar" aria-label="Швидкий зв'язок" data-rec="R-002,GA-R007">
+  <a href={contacts.phoneMain.href}><Icon name="phone" /><span>Подзвонити</span></a>
+  <a href={contacts.viber}><Icon name="viber" /><span>Viber</span></a>
+  <a href={contacts.whatsapp}><Icon name="whatsapp" /><span>WhatsApp</span></a>
+</nav>
+
+<style>
+  .bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); background: var(--color-inverse-bg); padding-bottom: env(safe-area-inset-bottom); }
+  .bar a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: var(--bar-h); color: var(--color-inverse-text); text-decoration: none; font-size: .8125rem; font-weight: 500; transition: background-color var(--dur-fast) var(--ease-out); }
+  .bar a + a { border-left: 1px solid var(--color-inverse-line); }
+  .bar a:hover, .bar a:active { background: var(--color-inverse-line); }
+  .bar a:focus-visible { outline: 2px solid var(--color-accent); outline-offset: -4px; }
+  .bar :global(svg) { width: 22px; height: 22px; }
+  @media (min-width: 768px) { .bar { display: none; } }
+</style>

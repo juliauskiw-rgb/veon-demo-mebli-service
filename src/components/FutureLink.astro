@@ -1,0 +1,23 @@
+---
+// A future page that is not built in the demo yet (menu item, button, card, footer link).
+// Renders an inactive element with a short note instead of a link: never point it to the client's current site.
+// `note` is written in the project language, e.g. «Раздел в разработке» / «Розділ у розробці» / "Coming soon".
+// Only showcase items pass `focusable` (one or two per page) so keyboard users do not stop on every inactive item (Н-3);
+// the rest show the note on hover or tap.
+interface Props { note: string; class?: string; focusable?: boolean; }
+const { note, class: cls, focusable = false } = Astro.props;
+---
+<span class:list={["future-link", cls]} role="link" aria-disabled="true" tabindex={focusable ? 0 : undefined}>
+  <slot />
+  <span class="future-link__note" aria-hidden="true">{note}</span>
+  <span class="visually-hidden">({note})</span>
+</span>
+
+<script>
+  // Tap shows the note on touch screens (no focus needed); a second tap or a tap elsewhere hides it.
+  document.addEventListener("click", (e) => {
+    const t = (e.target as Element | null)?.closest?.(".future-link");
+    document.querySelectorAll(".future-link.is-noted").forEach((el) => { if (el !== t) el.classList.remove("is-noted"); });
+    t?.classList.toggle("is-noted");
+  });
+</script>

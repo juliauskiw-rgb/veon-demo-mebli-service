@@ -1,0 +1,36 @@
+---
+// Mebli-Service homepage (design/concept.md, ux/demo-home.md). Only this page exists until the client agrees.
+import { getImage } from "astro:assets";
+import Base from "../layouts/Base.astro";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import Services from "../components/Services.astro";
+import Works from "../components/Works.astro";
+import Price from "../components/Price.astro";
+import Reviews from "../components/Reviews.astro";
+import Faq from "../components/Faq.astro";
+import Contacts from "../components/Contacts.astro";
+import Footer from "../components/Footer.astro";
+import MobileBar from "../components/MobileBar.astro";
+import heroPhoto from "../assets/photos/hero-dyvan.jpg";
+
+const title = "Перетяжка і хімчистка меблів у Львові | Mebli-Service";
+const description = "Перетяжка, ремонт і хімчистка м'яких меблів у Львові та області. Надішліть фото меблів у Viber чи WhatsApp — майстер назве ціну. Щодня 8:00–21:00.";
+const og = await getImage({ src: heroPhoto, width: 1024, format: "jpg" });
+const jsonLd = { "@context": "https://schema.org", "@type": "WebSite", name: "Mebli-Service", inLanguage: "uk" };
+---
+<Base lang="uk" title={title} description={description} ogImage={og.src}>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} data-rec="R-012" />
+  <Header slot="header" />
+  <Hero />
+  <Services />
+  <Works />
+  <Price />
+  <Reviews />
+  <Faq />
+  <Contacts />
+  <Fragment slot="footer">
+    <Footer />
+    <MobileBar />
+  </Fragment>
+</Base>

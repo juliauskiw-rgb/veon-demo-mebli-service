@@ -1,0 +1,112 @@
+---
+// Sticky header (concept §5 «Навігація», ux §6): logo → #top, 6 anchors, 063 and one main button «Надіслати фото»
+// (Viber/WhatsApp icons removed: three actions about the same thing; messengers stay in hero, menu and mobile bar).
+// Below 1280 px the anchors move into a full-screen menu; below 768 px the header keeps logo, call and menu.
+import Logo from "./Logo.astro";
+import Icon from "./Icon.astro";
+import { nav, contacts } from "../data/site";
+---
+<header class="header" data-rec="R-002">
+  <div class="container header__row">
+    <Logo />
+    <nav class="header__nav" aria-label="Розділи сторінки">
+      <ul>
+        {nav.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+      </ul>
+    </nav>
+    <div class="header__actions">
+      <a class="header__phone tnum" href={contacts.phoneMain.href}>{contacts.phoneMain.display}</a>
+      <a class="btn btn--primary header__cta" href={contacts.viber}>Надіслати фото</a>
+      <a class="header__icon header__call" href={contacts.phoneMain.href} aria-label={`Подзвонити ${contacts.phoneMain.display}`}><Icon name="phone" /></a>
+      <button class="header__icon header__burger" type="button" aria-expanded="false" aria-controls="menu" aria-label="Відкрити меню">
+        <Icon name="menu" />
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="menu" id="menu" hidden>
+  <div class="container menu__inner">
+    <div class="menu__top">
+      <Logo />
+      <button class="header__icon menu__close" type="button" aria-label="Закрити меню"><Icon name="close" /></button>
+    </div>
+    <nav aria-label="Меню">
+      <ul class="menu__list">
+        {nav.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+      </ul>
+    </nav>
+    <div class="menu__contacts">
+      <a class="menu__phone tnum" href={contacts.phoneMain.href}>{contacts.phoneMain.display}</a>
+      <a class="menu__phone tnum" href={contacts.phoneSecond.href}>{contacts.phoneSecond.display}</a>
+      <div class="menu__msg">
+        <a class="btn btn--primary" href={contacts.viber}><Icon name="viber" />Viber</a>
+        <a class="btn btn--secondary" href={contacts.whatsapp}><Icon name="whatsapp" />WhatsApp</a>
+      </div>
+      <p class="menu__hours">{contacts.hours}</p>
+    </div>
+  </div>
+</div>
+
+<style>
+  .header { position: sticky; top: 0; z-index: 50; background: var(--color-bg); border-bottom: 1px solid var(--color-line); }
+  .header__row { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); height: var(--header-h); }
+  .header__nav { display: none; }
+  .header__nav ul { display: flex; gap: clamp(1rem, 1.5vw, 1.625rem); }
+  .header__nav a { position: relative; display: inline-flex; align-items: center; min-height: var(--tap); text-decoration: none; font-size: var(--fs-1); color: var(--color-text); }
+  .header__nav a::after { content: ""; position: absolute; left: 0; right: 0; bottom: 8px; height: 2px; background: var(--color-accent); transform: scaleX(0); transform-origin: left; transition: transform var(--dur-mid) var(--ease-out); }
+  .header__nav a:hover::after { transform: scaleX(1); }
+  .header__actions { display: flex; align-items: center; gap: .25rem; }
+  .header__phone { display: none; white-space: nowrap; font-weight: 500; text-decoration: none; padding-inline: var(--s-1); min-height: var(--tap); align-items: center; }
+  .header__phone:hover { color: var(--color-link); }
+  .header__icon { display: inline-grid; place-items: center; width: var(--tap); height: var(--tap); border-radius: var(--radius); border: 0; background: transparent; color: var(--color-text); cursor: pointer; transition: background-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out); }
+  .header__icon:hover { background: var(--color-surface); }
+  .header__icon:active { transform: scale(.96); }
+  .header__cta { display: none; min-height: 2.75rem; padding-inline: 1.125rem; }
+  .header__burger { display: none; }
+  :global(.js) .header__burger { display: inline-grid; }
+
+  @media (min-width: 768px) {
+    .header__cta { display: inline-flex; }
+    .header__call { display: none; }
+    .header__phone { display: inline-flex; }
+  }
+  @media (min-width: 1280px) {
+    .header__nav { display: block; }
+    :global(.js) .header__burger { display: none; }
+  }
+
+  .menu { position: fixed; inset: 0; z-index: 60; background: var(--color-bg); overflow-y: auto; }
+  .menu[hidden] { display: none; }
+  .menu__inner { display: flex; flex-direction: column; gap: var(--s-4); min-height: 100%; padding-bottom: var(--s-5); }
+  .menu__top { display: flex; align-items: center; justify-content: space-between; height: var(--header-h); border-bottom: 1px solid var(--color-line); }
+  .menu__list a { display: flex; align-items: center; min-height: 3.25rem; font-family: var(--font-display); font-size: var(--fs-4); text-decoration: none; border-bottom: 1px solid var(--color-line); }
+  .menu__list a:hover { color: var(--color-link); }
+  .menu__contacts { display: grid; gap: var(--s-2); }
+  .menu__phone { font-size: var(--fs-3); font-weight: 500; text-decoration: none; min-height: var(--tap); display: inline-flex; align-items: center; }
+  .menu__msg { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-1); }
+  .menu__hours { color: var(--color-muted); }
+  @media (min-width: 1280px) { .menu { display: none !important; } }
+</style>
+
+<script>
+  const menu = document.getElementById("menu");
+  const open = document.querySelector<HTMLButtonElement>(".header__burger");
+  const close = menu?.querySelector<HTMLButtonElement>(".menu__close");
+  const setOpen = (on: boolean) => {
+    if (!menu || !open) return;
+    menu.hidden = !on;
+    open.setAttribute("aria-expanded", String(on));
+    document.documentElement.style.overflow = on ? "hidden" : "";
+    if (on) close?.focus(); else open.focus();
+  };
+  open?.addEventListener("click", () => setOpen(true));
+  close?.addEventListener("click", () => setOpen(false));
+  menu?.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => {
+    if (!menu || !open) return;
+    menu.hidden = true;
+    open.setAttribute("aria-expanded", "false");
+    document.documentElement.style.overflow = "";
+  }));
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && menu && !menu.hidden) setOpen(false); });
+</script>

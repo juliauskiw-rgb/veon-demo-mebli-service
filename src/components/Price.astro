@@ -1,0 +1,70 @@
+---
+// «Як дізнатися ціну» (concept §5 «Ціна», R-005): the one dark band. Four verbs as a sequence, materials as words,
+// five facts of how the workshop works, and the Viber action. No numbers: the price is named after the photo (C-007).
+import Icon from "./Icon.astro";
+import { steps, workFacts, contacts } from "../data/site";
+---
+<section id="yak-diznatysya-tsinu" class="section price on-dark" aria-labelledby="price-title" data-rec="R-005,GA-R003,MA-R005">
+  <div class="container price__grid">
+    <div class="price__main">
+      <h2 id="price-title" class="h2">Як дізнатися ціну</h2>
+      <p class="price__lead">Вартість роботи й матеріалу розраховуємо для вашої речі окремо, тому цін на сайті немає. Шлях до ціни короткий:</p>
+      <ol class="steps">
+        {steps.map((s, i) => (
+          <li class="step">
+            <span class="step__n tnum" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+            <div>
+              <h3 class="step__title">{s.title}</h3>
+              {s.text && <p class="step__text">{s.text}</p>}
+              {"materials" in s && (
+                <p class="step__text step__materials">{s.materials.join(", ")}.</p>
+              )}
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+
+    <aside class="price__side" aria-labelledby="price-how">
+      <h3 id="price-how" class="price__side-title">Як ми працюємо</h3>
+      <ul class="facts">
+        {workFacts.map((f) => <li>{f}</li>)}
+      </ul>
+      <div class="price__actions" data-rec="R-002">
+        <a class="btn btn--primary" href={contacts.viber}><Icon name="viber" />Надіслати фото у Viber</a>
+        <a class="btn btn--secondary" href={contacts.whatsapp}><Icon name="whatsapp" />WhatsApp</a>
+      </div>
+      <p class="price__hours">{contacts.hours}</p>
+    </aside>
+  </div>
+</section>
+
+<style>
+  .price { background: var(--color-inverse-bg); color: var(--color-inverse-text); }
+  .price__grid { display: grid; gap: var(--s-6); }
+  .price__lead { margin-top: var(--s-3); font-size: var(--fs-2); color: var(--color-inverse-muted); max-width: 40ch; }
+  .steps { margin-top: var(--s-5); counter-reset: none; }
+  .step { display: grid; grid-template-columns: 2.75rem minmax(0, 1fr); gap: var(--s-2); padding-block: var(--s-3); border-top: 1px solid var(--color-inverse-line); }
+  .step:last-child { border-bottom: 1px solid var(--color-inverse-line); }
+  .step__n { padding-top: .45em; font-size: var(--fs-cap); color: var(--color-accent); font-weight: 500; }
+  .step__title { font-size: var(--fs-4); font-weight: 500; letter-spacing: -0.01em; }
+  .step__text { margin-top: var(--s-1); color: var(--color-inverse-muted); max-width: 46ch; }
+  .step__materials { color: var(--color-inverse-text); font-size: var(--fs-2); line-height: 1.5; }
+  .price__side-title { font-size: var(--fs-3); font-weight: 500; }
+  .facts { margin-top: var(--s-3); display: grid; }
+  .facts li { padding-block: .875rem; border-top: 1px solid var(--color-inverse-line); }
+  .facts li:last-child { border-bottom: 1px solid var(--color-inverse-line); }
+  .price__actions { margin-top: var(--s-4); display: grid; gap: var(--s-1); }
+  .price__hours { margin-top: var(--s-2); font-size: var(--fs-cap); color: var(--color-inverse-muted); }
+
+  @media (min-width: 768px) {
+    .price__actions { display: flex; flex-wrap: wrap; }
+    .step { grid-template-columns: 4rem minmax(0, 1fr); }
+  }
+  @media (min-width: 1024px) {
+    .price__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gap); align-items: start; }
+    .price__main { grid-column: 1 / span 7; }
+    .price__side { grid-column: 9 / -1; position: sticky; top: calc(var(--header-h) + var(--s-4)); margin-top: calc(var(--fs-5) * 1.1 + var(--s-5)); }
+    .step__title { font-size: var(--fs-5); line-height: 1.05; }
+  }
+</style>

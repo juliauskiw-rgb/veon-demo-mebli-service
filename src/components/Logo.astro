@@ -1,0 +1,25 @@
+---
+// Client logo (C-016): the outline sofa kept as is; the wordmark is set in ink for contrast (decisions.md).
+import { Image } from "astro:assets";
+import logo from "../assets/logo.png";
+interface Props { class?: string; }
+const { class: cls } = Astro.props;
+---
+<a href="#top" class:list={["logo", cls]} aria-label="Mebli-Service.com.ua, на початок сторінки">
+  <Image src={logo} alt="Mebli-Service" width={70} height={43} format="png" class="logo__mark" loading="eager" />
+  <span class="logo__word">Mebli-Service<span class="logo__tld">.com.ua</span></span>
+</a>
+
+<style>
+  .logo { display: inline-flex; align-items: center; gap: .625rem; min-height: var(--tap); text-decoration: none; color: var(--color-text); border-radius: var(--radius); }
+  .logo__mark { width: 46px; height: auto; }
+  .logo__word { font-family: var(--font-body); font-weight: 600; font-size: 1.0625rem; letter-spacing: -0.01em; line-height: 1; white-space: nowrap; }
+  .logo__tld { font-weight: 400; color: var(--color-muted); }
+  @media (min-width: 1024px) {
+    .logo__mark { width: 56px; }
+    .logo__word { font-size: 1.1875rem; }
+  }
+  @media (max-width: 359px) {
+    .logo__tld { display: none; }
+  }
+</style>

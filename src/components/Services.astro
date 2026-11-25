@@ -1,0 +1,130 @@
+---
+// Services as an editorial table of contents (concept §5 «Послуги»): 5 groups, 21 positions of C-006.
+// Each position with its own future page is a FutureLink; a photo only where a real work proves the group.
+import { Picture } from "astro:assets";
+import FutureLink from "./FutureLink.astro";
+import sofa from "../assets/photos/kutovyi-dyvan-lizhko.jpg";
+import office from "../assets/photos/ofisne-krislo-svitle.jpg";
+import car from "../assets/photos/sydinnya-avto.jpg";
+import { services, FUTURE } from "../data/site";
+
+const photos = { sofa, office, car } as const;
+const alts = {
+  sofa: "Кутовий диван-ліжко після перетяжки в сіро-бежевий велюр",
+  office: "Офісне крісло після перетяжки світлою шкірою",
+  car: "Передні сидіння авто після перетяжки, вставки зі стьобаної тканини",
+} as const;
+---
+<section id="posluhy" class="section services" aria-labelledby="posluhy-title" data-rec="R-001">
+  <div class="container">
+    <div class="services__head" data-reveal>
+      <h2 id="posluhy-title" class="h2">Що ми перетягуємо, ремонтуємо і чистимо</h2>
+      <p class="lead">Знайдіть свою річ у переліку. Ціну майстер назве після фото.</p>
+    </div>
+
+    <ol class="services__list">
+      {services.map((g, gi) => {
+        const kind = g.photo ? (g.items.length > 3 ? "wide" : "card") : "text";
+        return (
+        <li id={g.id} class:list={["svc", `svc--${kind}`, g.id]} data-reveal style={`--reveal-delay:${Math.min(gi % 2, 1) * 60}ms`}>
+          {g.photo && (
+            <figure class="svc__photo">
+              <div class:list={["svc__frame", `svc__frame--${g.photo}`]}>
+                <Picture src={photos[g.photo]} alt={alts[g.photo]} widths={[320, 480, 640]} sizes="(min-width: 1024px) 384px, (min-width: 768px) 45vw, calc(100vw - 48px)" formats={["webp"]} loading="lazy" decoding="async" />
+              </div>
+              <figcaption>{g.photoCaption}</figcaption>
+            </figure>
+          )}
+          <h3 class="svc__title">{g.title}</h3>
+          <div class="svc__body">
+            <ul class="svc__items">
+              {g.items.map((it) => (
+                <li>{it.future ? <FutureLink note={FUTURE}>{it.label}</FutureLink> : <span class="svc__plain">{it.label}</span>}</li>
+              ))}
+            </ul>
+            {g.extra && (
+              <div class="svc__extra">
+                <p class="svc__extra-title">{g.extra.title}</p>
+                <ul>{g.extra.items.map((x) => <li>{x}</li>)}</ul>
+              </div>
+            )}
+            {g.note && <p class="svc__note">{g.note}</p>}
+          </div>
+        </li>
+        );
+      })}
+    </ol>
+
+    <p class="services__all"><FutureLink note={FUTURE} focusable>Усі послуги</FutureLink></p>
+  </div>
+</section>
+
+<style>
+  /* Three densities instead of five equal rows (hallmark-finish §1):
+     wide row (the main group, list + photo) → two photo cards side by side → two dense text panels. Row height follows content. */
+  .services__head { display: grid; gap: var(--s-2); }
+  .services__head .h2 { max-width: 20ch; }
+  .services__list { margin-top: var(--s-5); border-top: 1px solid var(--color-text); display: grid; gap: 0 var(--gap); }
+  .svc { display: grid; gap: var(--s-2); align-content: start; padding-block: var(--s-4); border-bottom: 1px solid var(--color-line); min-width: 0; }
+  .svc__title { font-size: var(--fs-4); font-weight: 500; letter-spacing: -0.01em; }
+  .svc__items { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--s-3); }
+  .svc__items li { min-width: 0; }
+  .svc__items li:only-child { grid-column: 1 / -1; }
+  .svc__items :global(.future-link), .svc__plain { display: inline-flex; align-items: center; min-height: var(--tap); font-size: var(--fs-2); line-height: 1.3; }
+  .svc__plain { color: var(--color-text); }
+  .svc__extra { margin-top: var(--s-1); }
+  .svc__extra-title { font-weight: 500; }
+  .svc__extra ul { margin-top: var(--s-1); display: grid; gap: .375rem; color: var(--color-muted); }
+  .svc__extra li { padding-left: 1rem; position: relative; }
+  .svc__extra li::before { content: ""; position: absolute; left: 0; top: .78em; width: .5rem; height: 1px; background: var(--color-muted); }
+  .svc__note { margin-top: var(--s-1); color: var(--color-muted); max-width: 46ch; }
+  .svc__photo { min-width: 0; }
+  .svc__frame { overflow: clip; aspect-ratio: 3 / 2; background: var(--color-line); }
+  .svc__frame :global(picture) { height: 100%; }
+  .svc__frame :global(img) { width: 100%; height: 100%; object-fit: cover; transition: transform var(--dur-mid) var(--ease-out); }
+  .svc__photo figcaption { margin-top: var(--s-1); font-size: var(--fs-cap); color: var(--color-muted); }
+  .svc--wide .svc__photo { order: 3; }
+  .svc--card .svc__items { grid-template-columns: minmax(0, 1fr); }
+  /* Text panels: no photo, denser type, surface background, items as a wrapping run. */
+  .svc--text { background: var(--color-surface); padding: var(--s-4) var(--s-3); border: 1px solid var(--color-line); margin-top: var(--s-3); }
+  .svc--text .svc__title { font-size: var(--fs-3); }
+  .posluhy-khimchystka .svc__items { display: flex; flex-wrap: wrap; gap: 0 var(--s-3); }
+  .posluhy-khimchystka .svc__items :global(.future-link) { font-family: var(--font-display); font-size: var(--fs-3); }
+  /* Хімчистка stays open (no panel): short content, no framed empty box; Ремонт keeps the panel. */
+  .svc--text.posluhy-khimchystka { background: none; border: 0; border-bottom: 1px solid var(--color-line); padding-inline: 0; align-self: start; }
+  .services__all { margin-top: var(--s-4); font-weight: 500; }
+
+  @media (min-width: 768px) {
+    .services__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .svc--wide { grid-column: 1 / -1; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--gap); }
+    .svc--wide .svc__title, .svc--wide .svc__body { grid-column: 1; }
+    .svc--wide .svc__photo { grid-column: 2; grid-row: 1 / span 2; }
+  }
+  @media (min-width: 1024px) {
+    .services__head { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); align-items: end; }
+    .services__head .lead { justify-self: end; }
+    .svc--wide { grid-template-columns: repeat(12, minmax(0, 1fr)); grid-template-rows: auto 1fr; align-items: start; }
+    .svc--wide .svc__title { grid-column: 1 / span 4; grid-row: 1 / span 2; font-size: var(--fs-5); line-height: 1.05; }
+    .svc--wide .svc__body { grid-column: 5 / span 4; grid-row: 1 / span 2; }
+    .svc--wide .svc__photo { grid-column: 9 / -1; grid-row: 1 / span 2; }
+    .svc--wide .svc__frame { aspect-ratio: 4 / 3; }
+    /* Cards: photo left (fixed portrait frame), title and list right — height = photo height. */
+    .svc--card { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); grid-template-rows: auto 1fr; column-gap: var(--gap); align-items: start; }
+    .svc--card .svc__photo { grid-column: 1; grid-row: 1 / span 2; }
+    .svc--card .svc__frame { aspect-ratio: 4 / 5; }
+    .svc--card .svc__title, .svc--card .svc__body { grid-column: 2; }
+    .svc--card .svc__title { padding-top: var(--s-1); }
+    .svc--card:nth-child(2) { padding-right: var(--s-3); border-right: 1px solid var(--color-line); }
+    /* 12-col list: wide row 12, cards 6 + 6, text panels 5 + 7 (Ремонт has the longer list, split in two columns). */
+    .services__list { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+    .svc--card { grid-column: span 6; }
+    .posluhy-khimchystka { grid-column: span 5; }
+    .posluhy-remont { grid-column: span 7; }
+    .svc--text { padding: var(--s-4); margin-top: var(--s-4); }
+    .posluhy-remont .svc__extra ul { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--gap); }
+    .svc:hover .svc__frame :global(img) { transform: scale(1.03); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .svc:hover .svc__frame :global(img) { transform: none; }
+  }
+</style>

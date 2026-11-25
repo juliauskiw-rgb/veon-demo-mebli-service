@@ -1,0 +1,80 @@
+/* Hallmark · shape: custom (hero → posluhy → roboty → yak-diznatysya-tsinu → vidguky → pytannya → kontakty) · genre: editorial · theme: custom · job: hire · idea: "Перелік речей, які майстерня повертає в дім" · vibe: "майстерня, предмет, чесний шлях до ціни"
+ * paper: #F3F4F2 · accent: #00BFFE · display: Piazzolla · body: Golos Text · hero: H1 на всю ширину, колонка дії + фото роботи, речення-перелік предметів · nav: тонка закріплена шапка з кнопкою «Надіслати фото» · footer: світлий, лінія зверху · imagery: client photos · signature: речення-перелік речей-посилань
+ * axes: light/roman-serif/chromatic-cyan · posture: committed · contrast: pass · fold: pass · v2.0.0 */
+/* Hallmark · pre-emit critique: P4 H4 E4 S4 R4 V3 · weakest: V (фото клієнта різної якості), взято лише найкращі кадри, єдине кадрування по предмету, без радіусів і фільтрів */
+/* Client design tokens: only from design/concept.md (veon-concept colors and fonts, §8.4, §8.12). One token system for the whole site. */
+
+@font-face { font-family: "Piazzolla"; font-style: normal; font-weight: 400 700; font-display: swap; src: url("/fonts/piazzolla-cyrillic.woff2") format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "Piazzolla"; font-style: normal; font-weight: 400 700; font-display: swap; src: url("/fonts/piazzolla-latin.woff2") format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Golos Text"; font-style: normal; font-weight: 400 600; font-display: swap; src: url("/fonts/golos-cyrillic.woff2") format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "Golos Text"; font-style: normal; font-weight: 400 600; font-display: swap; src: url("/fonts/golos-latin.woff2") format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+
+/* Metric-matched fallbacks: the sentence-list now sits in the first screen, so the swap must not re-wrap lines (CLS 0).
+   size-adjust = measured text width Piazzolla/Georgia on the page copy. */
+@font-face { font-family: "Piazzolla Fallback"; src: local("Georgia"); size-adjust: 92.9%; ascent-override: 111%; descent-override: 31%; line-gap-override: 0%; }
+
+:root {
+  /* Colour roles (concept §8.12) */
+  --color-bg: #F3F4F2;
+  --color-surface: #FDFDFC;
+  --color-text: #121A23;
+  --color-muted: #4B5560;
+  --color-accent: #00BFFE;
+  --color-accent-hover: #00A9E0;
+  --color-accent-ink: #121A23;
+  --color-link: #00668F;
+  --color-border-input: #6B7580;
+  --color-line: #CDD2D6;
+  --color-inverse-bg: #121A23;
+  --color-inverse-text: #F3F4F2;
+  --color-inverse-muted: #A9B4BE;
+  --color-inverse-line: #34414D;
+  --color-scrim: rgb(18 26 35 / 0.94);
+  --color-shadow: rgb(18 26 35 / 0.16);
+
+  /* Type */
+  --font-display: "Piazzolla", "Piazzolla Fallback", Georgia, "Times New Roman", serif;
+  --font-body: "Golos Text", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --fs-1: 1rem;                                              /* 16 */
+  --fs-cap: 0.9375rem;                                       /* 15, captions and meta */
+  --fs-2: clamp(1.125rem, 1.07rem + 0.27vw, 1.25rem);        /* 18 → 20 */
+  --fs-3: clamp(1.375rem, 1.26rem + 0.55vw, 1.5625rem);      /* 22 → 25 */
+  --fs-4: clamp(1.75rem, 1.6rem + 0.7vw, 2rem);              /* 28 → 32 */
+  --fs-5: clamp(2.125rem, 1.7rem + 1.9vw, 3rem);             /* 34 → 48 */
+  --fs-6: clamp(2.75rem, 1.35rem + 5.6vw, 6rem);             /* 44 → 96 */
+  --fs-body: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem);        /* 16 → 17 */
+  --lh-body: 1.6;
+  --lh-head: 1.08;
+
+  /* Space: 8 px rhythm */
+  --s-1: 0.5rem;
+  --s-2: 1rem;
+  --s-3: 1.5rem;
+  --s-4: 2rem;
+  --s-5: 3rem;
+  --s-6: 4rem;
+  --s-7: 6rem;
+  --space: clamp(1.5rem, 0.86rem + 2.67vw, 3rem);            /* page gutters 24 → 48 */
+  --gap: 1.5rem;
+  --section-y: clamp(3.5rem, 2.3rem + 3.6vw, 6rem);           /* 56 → 96 (was 136: gaps too large on desktop, Н-4) */
+  --container: 1200px;
+
+  /* Shape and size */
+  --radius: 6px;
+  --border: 1.5px;
+  --tap: 44px;
+  --btn-h: 3.375rem;                                         /* 54 */
+  --header-h: 56px;
+  --bar-h: 60px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(.2, .7, .2, 1);
+  --dur: 500ms;
+  --dur-fast: 150ms;
+  --dur-mid: 250ms;
+
+  /* Breakpoints (literal in media queries): 768 · 1024 · 1280 */
+}
+@media (min-width: 1024px) {
+  :root { --header-h: 72px; }
+}

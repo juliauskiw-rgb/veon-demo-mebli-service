@@ -1,0 +1,51 @@
+---
+// Light footer with a line on top (concept §5 «Футер»): logo, contacts, hours, future pages, privacy policy.
+import Logo from "./Logo.astro";
+import FutureLink from "./FutureLink.astro";
+import { contacts, footerPages, FUTURE } from "../data/site";
+---
+<footer class="footer">
+  <div class="container footer__grid">
+    <div class="footer__brand">
+      <Logo />
+      <p class="footer__about">Перетяжка, ремонт і хімчистка м'яких меблів у Львові та області.</p>
+    </div>
+    <div class="footer__col">
+      <h2 class="footer__h">Зв'язок</h2>
+      <ul>
+        <li><a class="tnum" href={contacts.phoneMain.href}>{contacts.phoneMain.display}</a></li>
+        <li><a class="tnum" href={contacts.phoneSecond.href}>{contacts.phoneSecond.display}</a></li>
+        <li><a href={contacts.email.href}>{contacts.email.display}</a></li>
+        <li class="footer__muted">{contacts.hours}</li>
+      </ul>
+    </div>
+    <div class="footer__col">
+      <h2 class="footer__h">Сторінки</h2>
+      <ul>
+        {footerPages.map((p) => <li><FutureLink note={FUTURE}>{p}</FutureLink></li>)}
+      </ul>
+    </div>
+  </div>
+  <div class="container footer__bottom">
+    <p>© 2026 Mebli-Service.com.ua</p>
+    <FutureLink note={FUTURE}>Політика конфіденційності</FutureLink>
+  </div>
+</footer>
+
+<style>
+  .footer { border-top: 1px solid var(--color-line); padding-top: var(--s-6); padding-bottom: calc(var(--bar-h) + var(--s-3)); }
+  .footer__grid { display: grid; gap: var(--s-5); }
+  .footer__about { margin-top: var(--s-2); color: var(--color-muted); max-width: 32ch; }
+  .footer__h { font-family: var(--font-body); font-size: var(--fs-cap); font-weight: 500; color: var(--color-muted); }
+  .footer__col ul { margin-top: var(--s-1); display: grid; }
+  .footer__col li { display: flex; align-items: center; min-height: var(--tap); }
+  .footer__col a { text-decoration: none; white-space: nowrap; transition: color var(--dur-fast) var(--ease-out); }
+  .footer__col a:hover { color: var(--color-link); }
+  .footer__muted { color: var(--color-muted); }
+  .footer__bottom { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--s-1) var(--s-3); margin-top: var(--s-5); padding-block: var(--s-3); border-top: 1px solid var(--color-line); font-size: var(--fs-cap); color: var(--color-muted); }
+  .footer__bottom :global(.future-link) { min-height: var(--tap); }
+  @media (min-width: 768px) {
+    .footer { padding-bottom: 0; }
+    .footer__grid { grid-template-columns: minmax(0, 5fr) minmax(0, 4fr) minmax(0, 3fr); }
+  }
+</style>

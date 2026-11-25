@@ -1,0 +1,54 @@
+---
+// Questions (concept §5 «Питання»): sticky title with the call on the left, an accordion on the right.
+// Native <details>: works from the keyboard and without scripts.
+import FutureLink from "./FutureLink.astro";
+import Icon from "./Icon.astro";
+import { faq, contacts, FUTURE } from "../data/site";
+---
+<section id="pytannya" class="section faq" aria-labelledby="pytannya-title">
+  <div class="container faq__grid">
+    <div class="faq__side">
+      <h2 id="pytannya-title" class="h2">Питання й відповіді</h2>
+      <p class="faq__lead">Не знайшли свого питання? Запитайте майстра.</p>
+      <a class="btn btn--secondary faq__call tnum" href={contacts.phoneMain.href} aria-label={`Подзвонити ${contacts.phoneMain.display}`}><Icon name="phone" />{contacts.phoneMain.display}</a>
+    </div>
+    <div class="faq__list">
+      {faq.map((f) => (
+        <details class="qa">
+          <summary>
+            <h3 class="qa__q">{f.q}</h3>
+            <span class="qa__icon" aria-hidden="true"><Icon name="plus" /></span>
+          </summary>
+          <p class="qa__a">{f.a}</p>
+        </details>
+      ))}
+      <p class="faq__all"><FutureLink note={FUTURE}>Усі питання</FutureLink></p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq__grid { display: grid; gap: var(--s-5); }
+  .faq__lead { margin-top: var(--s-3); color: var(--color-muted); }
+  .faq__call { margin-top: var(--s-3); }
+  .faq__list { border-top: 1px solid var(--color-text); }
+  .qa { border-bottom: 1px solid var(--color-line); }
+  .qa summary { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); min-height: 4rem; padding-block: var(--s-2); cursor: pointer; list-style: none; border-radius: var(--radius); }
+  .qa summary::-webkit-details-marker { display: none; }
+  .qa__q { font-family: var(--font-display); font-size: var(--fs-3); font-weight: 500; line-height: 1.25; transition: color var(--dur-fast) var(--ease-out); }
+  .qa summary:hover .qa__q { color: var(--color-link); }
+  .qa__icon { flex: none; display: grid; place-items: center; width: var(--tap); height: var(--tap); border-radius: var(--radius); transition: transform var(--dur-mid) var(--ease-out), background-color var(--dur-fast) var(--ease-out); }
+  .qa summary:hover .qa__icon { background: var(--color-surface); }
+  .qa[open] .qa__icon { transform: rotate(45deg); }
+  .qa__a { padding-bottom: var(--s-3); max-width: 60ch; color: var(--color-muted); }
+  .faq__all { margin-top: var(--s-4); font-weight: 500; }
+
+  @media (min-width: 1024px) {
+    .faq__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gap); align-items: start; }
+    .faq__side { grid-column: 1 / span 4; position: sticky; top: calc(var(--header-h) + var(--s-4)); }
+    .faq__list { grid-column: 6 / -1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .qa__icon { transition: none; }
+  }
+</style>
