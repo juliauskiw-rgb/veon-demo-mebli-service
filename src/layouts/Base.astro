@@ -1,4 +1,5 @@
 ---
+import piazzollaCyr from '../assets/fonts/piazzolla-cyrillic.woff2?url';
 import "../styles/tokens.css";
 import "../styles/global.css";
 
@@ -21,7 +22,7 @@ const { lang, title, description, canonical, ogImage } = Astro.props;
     {ogImage && <meta property="og:image" content={ogImage} />}
     <meta name="theme-color" content="#F3F4F2" />
     <meta name="robots" content="noindex" />
-    <link rel="preload" href="/fonts/piazzolla-cyrillic.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={piazzollaCyr} as="font" type="font/woff2" crossorigin />
     <slot name="head" />
     <style is:global>html, body { overflow-x: clip; }</style>
   </head>
